@@ -1,0 +1,27 @@
+version: '3'
+services:
+  web:
+    working_dir: /fm
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - "./:/fm"
+    command: bash -c 'bundle exec rackup -p 4567 --host "0.0.0.0"'
+    ports:
+      - '4567:4567'
+    depends_on:
+      - postgres
+    links:
+      - postgres:postgres
+
+  postgres:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+volumes:
+  postgres_data:
+    driver: local
